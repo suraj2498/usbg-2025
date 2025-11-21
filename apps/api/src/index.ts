@@ -27,6 +27,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+console.log('Accepting origins - ', process.env.CORS_ORIGIN?.split(','))
 // Health check
 app.get('/health', (_req, res) => {
   res.json({
