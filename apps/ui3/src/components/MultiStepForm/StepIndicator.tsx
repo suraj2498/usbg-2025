@@ -1,14 +1,20 @@
 'use client';
 
-interface StepIndicatorProps {
+export interface StepIndicatorProps {
   currentStep: number;
   totalSteps: number;
 }
 
 const steps = [
-  { id: 1, label: 'Service' },
-  { id: 2, label: 'Contact' },
-  { id: 3, label: 'Content' },
+  { id: 1, label: 'Step 1' },
+  { id: 2, label: 'Step 2' },
+  { id: 3, label: 'Step 3' },
+  { id: 4, label: 'Step 4' },
+  { id: 5, label: 'Step 5' },
+  { id: 6, label: 'Step 6' },
+  { id: 7, label: 'Step 7' },
+  { id: 8, label: 'Step 8' },
+  { id: 9, label: 'Step 9' },
 ];
 
 export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
@@ -21,7 +27,6 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
             className={`
               relative flex items-center justify-center h-16
               transition-all duration-300
-              ${step.id === 1 ? 'pl-8' : ''}
               ${
                 step.id === currentStep
                   ? 'bg-primary text-white z-10'
@@ -33,9 +38,11 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
             style={{
               width: `${100 / totalSteps}%`,
               clipPath:
-                step.id === totalSteps
-                  ? 'polygon(10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 50%)'
-                  : 'polygon(10% 0%, 100% 0%, 90% 50%, 100% 100%, 10% 100%, 0% 50%)',
+                step.id === 1
+                  ? 'polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%)'
+                  : step.id === totalSteps
+                  ? 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 10% 50%)'
+                  : 'polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%, 10% 50%)',
             }}
           >
             <div className="flex items-center gap-3 font-semibold">

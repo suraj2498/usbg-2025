@@ -1,15 +1,13 @@
 'use client';
 
 import { useMultiStepForm, MultiStepFormData } from '@monorepo/forms';
-import { ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import StepIndicator from './StepIndicator';
-import Step1 from './steps/Step1';
-import Step2 from './steps/Step2';
-import Step3 from './steps/Step3';
+import Step from './steps/Step';
 
 export default function MultiStepForm() {
   const { form, currentStep, totalSteps, nextStep, prevStep, isFirstStep, isLastStep } =
-    useMultiStepForm(7);
+    useMultiStepForm(9);
 
   const onSubmit = async (data: MultiStepFormData) => {
     if (isLastStep) {
@@ -21,7 +19,7 @@ export default function MultiStepForm() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-8xl mx-auto">
       {/* Header */}
       <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 border-b-0">
         <div className="px-8 py-4 flex items-center justify-between border-b border-gray-200">
@@ -32,15 +30,8 @@ export default function MultiStepForm() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Service Request Form</h1>
+              <h1 className="text-xl font-bold text-gray-900">Business Plan Generator</h1>
               <p className="text-sm text-gray-600">Complete all required fields</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">User:</span>
-            <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-lg">
-              <User className="w-4 h-4 text-gray-600" />
-              <span className="text-sm font-medium text-gray-900">Joe Adam</span>
             </div>
           </div>
         </div>
@@ -53,9 +44,7 @@ export default function MultiStepForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Step Content */}
           <div className="min-h-[500px]">
-            {currentStep === 1 && <Step1 form={form} />}
-            {currentStep === 2 && <Step2 form={form} />}
-            {currentStep === 3 && <Step3 form={form} />}
+            <Step form={form} currentStep={currentStep} isLastStep={isLastStep} totalSteps={totalSteps} />
           </div>
 
           {/* Navigation Buttons */}

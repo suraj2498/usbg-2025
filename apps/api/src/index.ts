@@ -9,7 +9,7 @@ import businessPlanRouter from './routes/businessPlan';
 dotenv.config();
 
 const app: Express = express();
-const PORT = process.env.PORT ?? 4000;
+const PORT = process.env.PORT ?? 8080;
 
 // Middleware
 app.use(helmet());

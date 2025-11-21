@@ -3,10 +3,12 @@ import { Prisma } from '@prisma/client';
 
 export interface ApiError extends Error {
   statusCode?: number;
+  code?: string;
 }
 
 export const errorHandler = (
-  err: ApiError,
+  // @ts-ignore
+  err: ApiError | Prisma.PrismaClientKnownRequestError, // ← Update this
   _req: Request,
   res: Response,
   _next: NextFunction
@@ -14,6 +16,7 @@ export const errorHandler = (
   console.error('Error:', err);
 
   // Prisma errors
+  // @ts-ignore
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === 'P2002') {
       res.status(409).json({
