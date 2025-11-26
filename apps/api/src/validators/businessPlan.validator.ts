@@ -6,6 +6,7 @@ export const createBusinessPlanSchema = z.object({
   firstName: z.string(),
   middleName: z.string().optional(),
   lastName: z.string(),
+  email: z.string().email(),
   businessName: z.string().optional(),
   website: z.string().optional(),
   businessAddress: z.string().optional(),
@@ -63,6 +64,7 @@ export const createBusinessPlanSchema = z.object({
 
   // Optional user ID
   userId: z.string().optional(),
+  origin: z.string().optional()
 });
 
 export const updateBusinessPlanSchema = createBusinessPlanSchema.partial();

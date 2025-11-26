@@ -12,22 +12,30 @@ import {
 
 export * from './schemas';
 
-export function getSchemaForPage(page: number): z.ZodSchema {
+export function getSchemaForPage(page: string | number): z.ZodSchema {
   switch (page) {
+    case 'page1':
     case 1:
       return page1Schema;
+    case 'page2':
     case 2:
       return page2Schema;
+    case 'page3':
     case 3:
       return page3Schema;
+    case 'page4':
     case 4:
       return page4Schema;
+    case 'page5':
     case 5:
       return page5Schema;
+    case 'page6':
     case 6:
       return page6Schema;
+    case 'page7':
     case 7:
       return page7Schema;
+    case 'page8':
     case 8:
       return page8Schema;
     default:

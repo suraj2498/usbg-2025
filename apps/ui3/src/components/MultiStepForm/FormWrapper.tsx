@@ -1,21 +1,81 @@
 'use client';
-
-import { useMultiStepForm, MultiStepFormData } from '@monorepo/forms';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { useMultiStepForm, MultiStepFormData, getSchemaForPage } from '@monorepo/forms';
+import { ChevronLeft } from 'lucide-react';
 import StepIndicator from './StepIndicator';
 import Step from './steps/Step';
+import { z } from 'zod';
+import { formConfig } from '@/utils/form';
 
 export default function MultiStepForm() {
   const { form, currentStep, totalSteps, nextStep, prevStep, isFirstStep, isLastStep } =
     useMultiStepForm(9);
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const onSubmit = async (data: MultiStepFormData) => {
-    if (isLastStep) {
-      console.log('Form submitted:', data);
-      alert('Form submitted successfully! Check console for data.');
-    } else {
-      await nextStep();
+    try {
+      setIsSaving(true);
+      const currentStepName = Object.keys(formConfig)[currentStep - 1];
+
+      const isReviewStep = currentStep === totalSteps - 1;
+      console.log({ isReviewStep });
+      if (isReviewStep) {
+        // Validate final page
+        const currentSchema = getSchemaForPage(currentStep);
+        await currentSchema.parseAsync(data);
+
+        // Submit all data to API
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+        const response = await fetch(`${API_URL}/api/business-plans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, origin: process.env.NEXT_PUBLIC_ORIGIN ?? '' }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to save form');
+        }
+
+        const result = await response.json();
+        console.log('Form saved successfully:', result);
+        await nextStep(currentStepName);
+      } else if (isLastStep) {
+        window.location.href = process.env.NEXT_PUBLIC_STRIPE_LINK!;
+      } else {
+        // Just move to next step, no API call
+        await nextStep(currentStepName);
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          form.setError(err.path[0] as any, {
+            message: err.message,
+          });
+        });
+      } else {
+        console.error('Saving error:', error);
+        alert(error instanceof Error ? error.message : 'Failed to save. Please try again later.');
+      }
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const getButtonText = () => {
+    if (currentStep === totalSteps - 1) return 'Review';
+    else if (isLastStep)
+      return (
+        <>
+          Continue to checkout
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </>
+      );
+    else return 'Next step';
   };
 
   return (
@@ -25,8 +85,18 @@ export default function MultiStepForm() {
         <div className="px-8 py-4 flex items-center justify-between border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
             </div>
             <div>
@@ -44,7 +114,12 @@ export default function MultiStepForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Step Content */}
           <div className="min-h-[500px]">
-            <Step form={form} currentStep={currentStep} isLastStep={isLastStep} totalSteps={totalSteps} />
+            <Step
+              form={form}
+              currentStep={currentStep}
+              isLastStep={isLastStep}
+              totalSteps={totalSteps}
+            />
           </div>
 
           {/* Navigation Buttons */}
@@ -56,10 +131,9 @@ export default function MultiStepForm() {
               className={`
                 flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold
                 transition-all duration-200
-                ${
-                  isFirstStep
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-primary hover:text-primary shadow-sm'
+                ${isFirstStep
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-primary hover:text-primary shadow-sm'
                 }
               `}
             >
@@ -79,20 +153,9 @@ export default function MultiStepForm() {
                   transition-all duration-200 shadow-md hover:shadow-lg
                   min-w-[160px] justify-center
                 "
+                disabled={isSaving}
               >
-                {isLastStep ? (
-                  <>
-                    Submit Form
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </>
-                ) : (
-                  <>
-                    Next Step
-                    <ChevronRight className="w-5 h-5" />
-                  </>
-                )}
+                {getButtonText()}
               </button>
             </div>
           </div>

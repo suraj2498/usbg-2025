@@ -3,6 +3,7 @@ export interface MultiStepFormData {
   firstName?: string;
   lastName?: string;
   middleName?: string;
+  email?: string;
   businessName?: string;
   website?: string;
   businessAddress?: string;

@@ -16,8 +16,9 @@ const [isSaving, setIsSaving] = useState(false);
 const onSubmit = async (data: MultiStepFormData) => {
   try {
     setIsSaving(true);
-
-    if (isLastStep) {
+    
+    const isReviewStep = currentStep === totalSteps - 1;
+    if (isReviewStep) {
       // Validate final page
       const currentSchema = getSchemaForPage(currentStep);
       await currentSchema.parseAsync(data);
@@ -28,18 +29,20 @@ const onSubmit = async (data: MultiStepFormData) => {
       const response = await fetch(`${API_URL}/api/business-plans`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, origin: process.env.NEXT_PUBLIC_ORIGIN ?? ''}),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit form');
+        throw new Error(errorData.message || 'Failed to save form');
       }
 
       const result = await response.json();
-      console.log('Form submitted successfully:', result);
-
-      window.location.href = 'https://buy.stripe.com/test_eVq14o86xg7mfOobVi7kc00';
+      console.log('Form saved successfully:', result);
+      await nextStep();
+    }
+    else if (isLastStep) {
+      window.location.href = process.env.NEXT_PUBLIC_STRIPE_LINK!;
     } else {
       // Just move to next step, no API call
       await nextStep();
@@ -52,8 +55,8 @@ const onSubmit = async (data: MultiStepFormData) => {
         });
       });
     } else {
-      console.error('Submission error:', error);
-      alert(error instanceof Error ? error.message : 'Failed to submit. Please try again.');
+      console.error('Saving error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to save. Please try again later.');
     }
   } finally {
     setIsSaving(false);
@@ -64,7 +67,7 @@ const onSubmit = async (data: MultiStepFormData) => {
     if (currentStep === totalSteps - 1)
       return 'Review';
     else if (isLastStep)
-      return 'Submit'
+      return 'Continue to checkout'
     else
       return 'Next'
   }

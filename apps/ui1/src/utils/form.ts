@@ -30,6 +30,12 @@ export const formConfig: {
       placeholder: 'e.g., Doe',
     },
     {
+      label: 'Email',
+      type: 'input',
+      key: 'email',
+      placeholder: 'e.g., test@email.com',
+    },
+    {
       label: 'What is your business name?',
       type: 'input',
       key: 'businessName',

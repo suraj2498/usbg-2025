@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 export const page1Schema = z.object({
+  firstName: z.string().min(1, 'Please enter your first name'),
+  lastName: z.string().min(1, 'Please enter your last name'),
+  middleName: z.string().optional(),
+  email: z.string().email('Please enter a valid email address'),
   businessName: z.string().min(2, 'Business name is required'),
   website: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
   businessAddress: z.string().min(10, 'Please provide a complete address'),

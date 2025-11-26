@@ -19,6 +19,8 @@ model BusinessPlan {
   firstName     String?
   middleName    String?
   lastName      String?
+  email         String
+  origin        String?
 
   // Page 1: Company Overview & Goals
   businessName     String?

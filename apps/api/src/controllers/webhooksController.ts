@@ -1,27 +1,21 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
+import { prisma } from '../lib/prisma';
+import { getDomainConfig } from '../utils/utils';
+import { EmailService } from '../services/email';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const stripePaymentCompleted = async (req: Request, res: Response) => {
-  // TODO: Implement only if needed after verification
   const sig = req.headers['stripe-signature'] as string;
 
-  console.log('📨 Webhook received!');
-
   let event: Stripe.Event;
-
-  console.log(req.body)
-  console.log(sig)
-  console.log()
-
   try {
     // Verify signature
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    console.log('📦 FULL EVENT DATA:');
+    console.log(JSON.stringify(event, null, 2));
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     console.log('✅ Signature verified!');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -35,30 +29,47 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
     // Log specific data based on event type
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      
+
       console.log('💰 PAYMENT DATA:');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log('Session ID:', session.id);
-      console.log('Customer Email:', session.customer_email);
+      console.log('Customer Email:', session.customer_details?.email);
       console.log('Amount Total:', session.amount_total, '(cents)');
       console.log('Amount:', `$${(session.amount_total || 0) / 100}`);
       console.log('Currency:', session.currency);
       console.log('Payment Status:', session.payment_status);
       console.log('Metadata:', JSON.stringify(session.metadata, null, 2));
+
+      const latestRecord = await prisma.businessPlan.findFirst({
+        where: {
+          email: session.customer_details?.email,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      console.log("Latest Record", latestRecord)
+
+      if (process.env.SEND_EMAIL_ENABLED === 'true') {
+        const domainConfig = getDomainConfig(latestRecord?.origin ?? null);
+        const emailService = new EmailService();
+        const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
+
+        const submissionEmailRecipients = process.env.SUBMISSION_EMAIL_RECIPIENTS!.split(',');
+        await emailService.sendEmail({
+          to: submissionEmailRecipients,
+          subject: 'New Business Plan Generation Request',
+          html: htmlBody,
+          from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,
+        });
+      }
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     }
 
-    // Log full event data
-    console.log('📦 FULL EVENT DATA:');
-    console.log(JSON.stringify(event, null, 2));
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
     return res.json({ received: true });
-
   } catch (err: any) {
-    console.error('❌ Signature verification failed!');
     console.error('Error:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 };
-

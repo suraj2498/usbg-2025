@@ -1,22 +1,77 @@
 'use client';
-
-import { useMultiStepForm, MultiStepFormData } from '@monorepo/forms';
+import { useState } from 'react';
+import { useMultiStepForm, MultiStepFormData, getSchemaForPage } from '@monorepo/forms';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import StepIndicator from './StepIndicator';
 import Step from './steps/Step';
+import { z } from 'zod'
+import { formConfig } from '@/utils/form';
 
 export default function MultiStepForm() {
   const { form, currentStep, totalSteps, nextStep, prevStep, isFirstStep, isLastStep } =
     useMultiStepForm(9);
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const onSubmit = async (data: MultiStepFormData) => {
-    if (isLastStep) {
-      console.log('Form submitted:', data);
-      alert('Form submitted successfully! Check console for data.');
-    } else {
-      await nextStep();
+    try {
+      setIsSaving(true);
+      const currentStepName = Object.keys(formConfig)[currentStep - 1];
+
+      const isReviewStep = currentStep === totalSteps - 1;
+      console.log({ isReviewStep });
+      if (isReviewStep) {
+        // Validate final page
+        const currentSchema = getSchemaForPage(currentStep);
+        await currentSchema.parseAsync(data);
+
+        // Submit all data to API
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+        const response = await fetch(`${API_URL}/api/business-plans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, origin: process.env.NEXT_PUBLIC_ORIGIN ?? '' }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to save form');
+        }
+
+        const result = await response.json();
+        console.log('Form saved successfully:', result);
+        await nextStep(currentStepName);
+      } else if (isLastStep) {
+        window.location.href = process.env.NEXT_PUBLIC_STRIPE_LINK!;
+      } else {
+        // Just move to next step, no API call
+        await nextStep(currentStepName);
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          form.setError(err.path[0] as any, {
+            message: err.message,
+          });
+        });
+      } else {
+        console.error('Saving error:', error);
+        alert(error instanceof Error ? error.message : 'Failed to save. Please try again later.');
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  const getButtonText = () => {
+    if (currentStep === totalSteps - 1)
+      return 'Review';
+    else if (isLastStep)
+      return 'Continue to checkout'
+    else
+      return 'Next'
+  }
 
   return (
     <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8 border-t-4 border-primary">
@@ -25,7 +80,12 @@ export default function MultiStepForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* Step Content */}
         <div className="min-h-[400px]">
-           <Step form={form} currentStep={currentStep} totalSteps={totalSteps} isLastStep={isLastStep} />
+          <Step
+            form={form}
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            isLastStep={isLastStep}
+          />
         </div>
 
         {/* Navigation Buttons */}
@@ -56,8 +116,9 @@ export default function MultiStepForm() {
               transition-all duration-200 shadow-md hover:shadow-lg
               min-w-[140px] justify-center
             "
+            disabled={isSaving}
           >
-            {isLastStep ? 'Submit' : 'Next Step'}
+            {getButtonText()}
             {!isLastStep && <ChevronRight className="w-5 h-5" />}
           </button>
         </div>
@@ -68,6 +129,7 @@ export default function MultiStepForm() {
         <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <p className="text-xs font-semibold text-gray-600 mb-2">Debug Info:</p>
           <pre className="text-xs text-gray-800 overflow-auto">
+
             {JSON.stringify(form.watch(), null, 2)}
           </pre>
         </div>

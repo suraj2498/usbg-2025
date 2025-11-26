@@ -30,6 +30,12 @@ export const formConfig: {
       placeholder: 'e.g., Doe',
     },
     {
+      label: 'Email',
+      type: 'input',
+      key: 'email',
+      placeholder: 'test@email.com',
+    },
+    {
       label: "Please provide your company's legal or operating name.",
       type: 'input',
       key: 'businessName',
@@ -75,7 +81,7 @@ export const formConfig: {
         'e.g., $500K annual revenue, 100+ enterprise clients, Industry Innovation Award 2024',
     },
   ],
-  page2: [
+  page4: [
     {
       label: 'Who started the business or key team members, and what are their roles?',
       type: 'textarea',
@@ -95,7 +101,7 @@ export const formConfig: {
       placeholder: 'Monthly training, performance bonuses, health benefits',
     },
   ],
-  page3: [
+  page5: [
     {
       label: 'What is your average price?',
       type: 'input',
@@ -115,7 +121,7 @@ export const formConfig: {
       placeholder: 'Yes, launching summer collection in Q2',
     },
   ],
-  page4: [
+  page2: [
     {
       label: 'What inspired you to start this business?',
       type: 'textarea',
@@ -165,7 +171,7 @@ export const formConfig: {
       placeholder: 'Our unique value proposition is...',
     },
   ],
-  page5: [
+  page8: [
     {
       label: 'What is your average monthly earning?',
       type: 'input',
@@ -229,7 +235,7 @@ export const formConfig: {
       placeholder: 'Planning to expand to Texas and Florida in 2025',
     },
   ],
-  page7: [
+  page3: [
     {
       label: 'What city, county, or region do you serve?',
       type: 'input',
@@ -261,7 +267,7 @@ export const formConfig: {
       placeholder: 'e.g., Remote work, sustainability focus, digital transformation',
     },
   ],
-  page8: [
+  page7: [
     {
       label: 'Strengths: What do customers love most about your business?',
       type: 'textarea',

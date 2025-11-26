@@ -30,6 +30,12 @@ export const formConfig: {
       placeholder: 'e.g., Doe',
     },
     {
+      label: 'Email',
+      type: 'input',
+      key: 'email',
+      placeholder: 'test@email.com',
+    },
+    {
       label: 'What do you call your company?',
       type: 'input',
       key: 'businessName',
@@ -74,7 +80,7 @@ export const formConfig: {
       placeholder: 'e.g., $500K revenue, 100+ clients, Best Startup Award 2024',
     },
   ],
-  page2: [
+  page3: [
     {
       label: 'What city, county, or region do you serve?',
       type: 'input',
@@ -106,7 +112,7 @@ export const formConfig: {
       placeholder: 'e.g., Remote work, sustainability focus, digital transformation',
     },
   ],
-  page3: [
+  page2: [
     {
       label: 'What inspired you to start this business?',
       type: 'textarea',
@@ -156,7 +162,7 @@ export const formConfig: {
       placeholder: 'Our unique value proposition is...',
     },
   ],
-  page4: [
+  page5: [
     {
       label: 'What is your average price?',
       type: 'input',
@@ -176,7 +182,7 @@ export const formConfig: {
       placeholder: 'Yes, launching summer collection in Q2',
     },
   ],
-  page5: [
+  page6: [
     {
       label: 'What is your monthly marketing cost?',
       type: 'input',
@@ -202,7 +208,7 @@ export const formConfig: {
       placeholder: 'Planning to expand to Texas and Florida in 2025',
     },
   ],
-  page6: [
+  page4: [
     {
       label: 'Who started the business or key team members, and what are their roles?',
       type: 'textarea',
@@ -222,7 +228,7 @@ export const formConfig: {
       placeholder: 'Monthly training, performance bonuses, health benefits',
     },
   ],
-  page7: [
+  page8: [
     {
       label: 'What is your average monthly earning?',
       type: 'input',
@@ -260,7 +266,7 @@ export const formConfig: {
       placeholder: 'Open second location, launch e-commerce site, hire 10 employees',
     },
   ],
-  page8: [
+  page7: [
     {
       label: 'Strengths: What do customers love most about your business?',
       type: 'textarea',

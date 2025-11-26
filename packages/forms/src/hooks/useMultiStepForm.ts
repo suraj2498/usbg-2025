@@ -8,7 +8,7 @@ export interface UseMultiStepFormReturn {
   form: UseFormReturn<MultiStepFormData>;
   currentStep: number;
   totalSteps: number;
-  nextStep: () => Promise<void>;
+  nextStep: (currentStepName?: string) => Promise<void>;
   prevStep: () => void;
   goToStep: (step: number) => void;
   isFirstStep: boolean;
@@ -23,9 +23,9 @@ export function useMultiStepForm(totalSteps: number = 3): UseMultiStepFormReturn
     mode: 'onChange',
   });
 
-  const nextStep = async () => {
+  const nextStep = async (currentStepName?: string) => {
     // Manually validate current step fields
-    const currentSchema = getSchemaForPage(currentStep);
+    const currentSchema = getSchemaForPage(currentStepName ?? currentStep);
     const currentData = form.getValues();
 
     console.log({currentStep, totalSteps})

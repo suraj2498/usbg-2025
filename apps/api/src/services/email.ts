@@ -65,7 +65,7 @@ export class EmailService {
     }
   }
 
-  generateBusinessPlanEmail(data: CreateBusinessPlanInput): string {
+  generateBusinessPlanEmail(data: any): string {
     const formatValue = (value: string | undefined) => {
       if (!value) return '<em style="color: #999;">Not provided</em>';
       return value.replace(/\n/g, '<br>');
@@ -214,6 +214,10 @@ export class EmailService {
               <div class="info-item">
                 <strong>Website</strong>
                 <span>${data.website ? `<a href="${data.website}" style="color: #667eea;">${data.website}</a>` : 'Not provided'}</span>
+              </div>
+              <div class="info-item">
+                <strong>Email</strong>
+                <span>${data.email ? `<a href="${data.email}" style="color: #667eea;">${data.email}</a>` : 'Not provided'}</span>
               </div>
             </div>
           </div>
