@@ -53,10 +53,12 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
       console.log('Latest Record', latestRecord);
 
       const domainConfig = getDomainConfig(latestRecord?.origin ?? null);
+      console.log({ domainConfig })
       const emailService = new EmailService();
       const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
 
       const submissionEmailRecipients = process.env.SUBMISSION_EMAIL_RECIPIENTS!.split(',');
+      console.log(submissionEmailRecipients)
       await emailService.sendEmail({
         to: submissionEmailRecipients,
         subject: 'New Business Plan Generation Request',
