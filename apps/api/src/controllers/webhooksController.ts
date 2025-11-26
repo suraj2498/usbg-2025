@@ -50,23 +50,21 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
         },
       });
 
-      console.log("Latest Record", latestRecord)
+      console.log('Latest Record', latestRecord);
 
-      if (process.env.SEND_EMAIL_ENABLED === 'true') {
-        const domainConfig = getDomainConfig(latestRecord?.origin ?? null);
-        const emailService = new EmailService();
-        const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
+      const domainConfig = getDomainConfig(latestRecord?.origin ?? null);
+      const emailService = new EmailService();
+      const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
 
-        const submissionEmailRecipients = process.env.SUBMISSION_EMAIL_RECIPIENTS!.split(',');
-        await emailService.sendEmail({
-          to: submissionEmailRecipients,
-          subject: 'New Business Plan Generation Request',
-          html: htmlBody,
-          from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,
-        });
-      }
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      const submissionEmailRecipients = process.env.SUBMISSION_EMAIL_RECIPIENTS!.split(',');
+      await emailService.sendEmail({
+        to: submissionEmailRecipients,
+        subject: 'New Business Plan Generation Request',
+        html: htmlBody,
+        from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,
+      });
     }
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     return res.json({ received: true });
   } catch (err: any) {
