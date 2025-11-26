@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'UI1 - Multi-Step Form',
-  description: 'Multi-step form implementation with shared logic',
+  title: 'EZ Business Plan',
+  description: 'Get started generating your business plan today with EZ Business Plan',
 };
 
 export default function RootLayout({

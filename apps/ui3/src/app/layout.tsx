@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'UI3 - Corporate Form',
-  description: 'Corporate-styled multi-step form',
+  title: 'Business Plan Boutique',
+  description: 'Curate your business plan',
 };
 
 export default function RootLayout({

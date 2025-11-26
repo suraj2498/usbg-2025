@@ -3,8 +3,8 @@ import Header from '../components/Layout/Header'
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'UI2 - Industrial Form',
-  description: 'Industrial-styled multi-step form',
+  title: 'Signature Business Plans',
+  description: 'Jump start your business with Signature Business Plans',
 };
 
 export default function RootLayout({
