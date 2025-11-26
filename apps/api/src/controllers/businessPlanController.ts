@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { createError } from '../middleware/errorHandler';
-import { EmailService } from '../services/email';
-import { getDomainConfig } from '../utils/utils';
 
 // Create a new business plan
 export const createBusinessPlan = async (

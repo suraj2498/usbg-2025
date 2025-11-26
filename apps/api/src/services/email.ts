@@ -1,5 +1,4 @@
 import { SESClient, SendEmailCommand, SendEmailCommandInput } from '@aws-sdk/client-ses';
-import { CreateBusinessPlanInput } from '../validators/businessPlan.validator';
 
 interface EmailOptions {
   to: string | string[];
