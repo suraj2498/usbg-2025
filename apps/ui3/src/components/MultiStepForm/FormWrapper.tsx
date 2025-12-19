@@ -79,29 +79,23 @@ export default function MultiStepForm() {
   };
 
   return (
-    <div className="max-w-8xl mx-auto">
-      {/* Header */}
-      <div className="bg-white rounded-t-lg shadow-sm border border-gray-200 border-b-0">
-        <div className="px-8 py-4 flex items-center justify-between border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
+    <div className="max-w-7xl mx-auto">
+      {/* Header with Asymmetric Layout */}
+      <div className="bg-white border-b-2 border-black mb-12">
+        <div className="px-12 py-8">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h1 className="text-4xl font-serif text-black mb-3" style={{ fontFamily: 'Didot, serif' }}>
+                Business Plan Generator
+              </h1>
+              <p className="text-lg text-gray-600 font-light" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>
+                Complete all required fields with care
+              </p>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Business Plan Generator</h1>
-              <p className="text-sm text-gray-600">Complete all required fields</p>
+            <div className="flex items-center gap-2 text-sm text-gray-500 font-light">
+              <span>Step {currentStep}</span>
+              <span className="text-gray-300">•</span>
+              <span>{totalSteps} total</span>
             </div>
           </div>
         </div>
@@ -109,9 +103,9 @@ export default function MultiStepForm() {
         <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
       </div>
 
-      {/* Form Content */}
-      <div className="bg-gray-50 rounded-b-lg shadow-sm border border-gray-200 border-t-0 p-8">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      {/* Form Content - Generous White Space */}
+      <div className="bg-white border border-gray-200 px-12 py-16">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
           {/* Step Content */}
           <div className="min-h-[500px]">
             <Step
@@ -122,55 +116,55 @@ export default function MultiStepForm() {
             />
           </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between pt-6 border-t-2 border-gray-200">
+          {/* Navigation Buttons - Asymmetric */}
+          <div className="flex items-center justify-between pt-12 border-t border-gray-300">
             <button
               type="button"
               onClick={prevStep}
               disabled={isFirstStep}
               className={`
-                flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold
-                transition-all duration-200
+                flex items-center gap-3 px-8 py-3 font-medium
+                transition-colors duration-200
                 ${isFirstStep
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-primary hover:text-primary shadow-sm'
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                  : 'bg-white border border-gray-400 text-gray-700 hover:border-black hover:text-black'
                 }
               `}
+              style={{ borderRadius: '4px', fontFamily: 'Helvetica Neue, sans-serif' }}
             >
               <ChevronLeft className="w-5 h-5" />
-              Previous Step
+              Previous
             </button>
 
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">
-                Step {currentStep} of {totalSteps}
-              </span>
-              <button
-                type="submit"
-                className="
-                  flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold
-                  bg-primary text-white hover:bg-primary-dark
-                  transition-all duration-200 shadow-md hover:shadow-lg
-                  min-w-[160px] justify-center
-                "
-                disabled={isSaving}
-              >
-                {getButtonText()}
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="
+                flex items-center gap-3 px-10 py-3 font-medium
+                bg-black text-white hover:bg-gray-800
+                transition-colors duration-200
+                min-w-[180px] justify-center
+              "
+              style={{ borderRadius: '4px', fontFamily: 'Helvetica Neue, sans-serif' }}
+              disabled={isSaving}
+            >
+              {getButtonText()}
+            </button>
           </div>
         </form>
 
         {/* Debug Info */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-white rounded-lg border border-gray-200">
-            <p className="text-xs font-semibold text-gray-600 mb-2">Debug Info:</p>
-            <pre className="text-xs text-gray-800 overflow-auto">
+          <div className="mt-12 p-6 bg-gradient-to-br from-pink-50 to-purple-50 border border-gray-200">
+            <p className="text-xs font-serif text-gray-700 mb-3" style={{ fontFamily: 'Didot, serif' }}>Debug Info:</p>
+            <pre className="text-xs text-gray-800 overflow-auto font-light" style={{ fontFamily: 'Helvetica Neue, sans-serif' }}>
               {JSON.stringify(form.watch(), null, 2)}
             </pre>
           </div>
         )}
       </div>
+
+      {/* Decorative Accent */}
+      <div className="mt-8 h-2 bg-gradient-to-r from-pink-200 via-purple-200 to-mint-200"></div>
     </div>
   );
 }

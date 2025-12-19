@@ -74,7 +74,7 @@ export default function MultiStepForm() {
   }
 
   return (
-    <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8 border-t-4 border-primary">
+    <div className="w-full max-w-4xl bg-white border border-gray-300 p-12">
       <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -89,18 +89,18 @@ export default function MultiStepForm() {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between pt-6 border-t-2 border-gray-100">
+        <div className="flex items-center justify-between pt-8 border-t border-gray-300">
           <button
             type="button"
             onClick={prevStep}
             disabled={isFirstStep}
             className={`
-              flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold
-              transition-all duration-200
+              flex items-center gap-2 px-8 py-3 font-medium
+              transition-colors duration-200
               ${
                 isFirstStep
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-primary hover:text-primary'
+                  : 'bg-white border border-gray-400 text-gray-700 hover:border-[#002147] hover:text-[#002147]'
               }
             `}
           >
@@ -111,10 +111,10 @@ export default function MultiStepForm() {
           <button
             type="submit"
             className="
-              flex items-center gap-2 px-8 py-2.5 rounded-lg font-semibold
-              bg-primary text-white hover:bg-primary-dark
-              transition-all duration-200 shadow-md hover:shadow-lg
-              min-w-[140px] justify-center
+              flex items-center gap-2 px-10 py-3 font-medium
+              bg-[#002147] text-white hover:bg-[#003366]
+              transition-colors duration-200
+              min-w-[160px] justify-center
             "
             disabled={isSaving}
           >
@@ -126,7 +126,7 @@ export default function MultiStepForm() {
 
       {/* Debug Info - Remove in production */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mt-8 p-4 bg-gray-50 border border-gray-200">
           <p className="text-xs font-semibold text-gray-600 mb-2">Debug Info:</p>
           <pre className="text-xs text-gray-800 overflow-auto">
 
