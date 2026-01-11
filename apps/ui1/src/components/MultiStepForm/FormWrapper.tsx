@@ -42,7 +42,7 @@ const onSubmit = async (data: MultiStepFormData) => {
       await nextStep();
     }
     else if (isLastStep) {
-      window.location.href = process.env.NEXT_PUBLIC_STRIPE_LINK!;
+      window.location.href = `${process.env.NEXT_PUBLIC_STRIPE_LINK!}?prefilled_email=${encodeURIComponent(data.email!)}`;
     } else {
       // Just move to next step, no API call
       await nextStep();
