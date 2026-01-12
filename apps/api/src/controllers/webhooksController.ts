@@ -51,17 +51,16 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
       });
 
       console.log('Latest Record', latestRecord);
-
       const domainConfig = getDomainConfig(latestRecord?.origin ?? null);
       console.log({ domainConfig })
       const emailService = new EmailService();
       const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
 
-      const submissionEmailRecipients = process.env.SUBMISSION_EMAIL_RECIPIENTS!.split(',');
+      const submissionEmailRecipients = process.env.DEFAULT_SUBMISSION_EMAIL_RECIPIENTS!.split(',');
       console.log(submissionEmailRecipients)
       await emailService.sendEmail({
-        to: submissionEmailRecipients,
-        subject: 'New Business Plan Generation Request',
+        to: domainConfig?.toEmail ?? submissionEmailRecipients,
+        subject: `New Business Plan Generation Request - ${latestRecord?.origin}`,
         html: htmlBody,
         from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,
       });

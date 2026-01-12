@@ -1,12 +1,15 @@
 export const DOMAIN_CONFIG = {
   'ez-businessplan.com': {
     fromEmail: 'no-reply@ez-businessplan.com',
+    toEmail: 'admin@ez-businessplan.com'
   },
   'signaturebusinessplans.com': {
     fromEmail: 'no-reply@signaturebusinessplans.com',
+    toEmail: 'admin@signaturebusinessplans.com'
   },
   'businessplanboutique.com': {
     fromEmail: 'no-reply@businessplanboutique.com',
+    toEmail: 'admin@businessplanboutique.com'
   },
 };
 
