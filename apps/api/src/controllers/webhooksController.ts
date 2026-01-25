@@ -27,23 +27,21 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     // Log specific data based on event type
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
+    if (event.type === 'payment_intent.succeeded') {
+      const data = event.data.object;
 
       console.log('💰 PAYMENT DATA:');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('Session ID:', session.id);
-      console.log('Customer Email:', session.customer_details?.email);
-      console.log('Amount Total:', session.amount_total, '(cents)');
-      console.log('Amount:', `$${(session.amount_total || 0) / 100}`);
-      console.log('Currency:', session.currency);
-      console.log('Payment Status:', session.payment_status);
-      console.log('Metadata:', JSON.stringify(session.metadata, null, 2));
+      console.log('Session ID:', data.id);
+      console.log('Customer Email:', data.metadata?.email);
+      console.log('Amount Total:', data.amount, '(cents)');
+      console.log('Currency:', data.currency);
+      console.log('Payment Status:', data.status);
 
       const latestRecord = await prisma.businessPlan.findFirst({
         where: {
           // @ts-ignore
-          email: session.customer_details?.email?.toLowerCase(),
+          email: data.metadata?.email?.toLowerCase(),
         },
         orderBy: {
           createdAt: 'desc',
@@ -57,9 +55,10 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
       const htmlBody = emailService.generateBusinessPlanEmail(latestRecord);
 
       const submissionEmailRecipients = process.env.DEFAULT_SUBMISSION_EMAIL_RECIPIENTS!.split(',');
-      console.log(submissionEmailRecipients)
+      console.log('Sending email to: ', domainConfig?.toEmail ?? submissionEmailRecipients)
       await emailService.sendEmail({
-        to: domainConfig?.toEmail ?? submissionEmailRecipients,
+        // to: domainConfig?.toEmail ?? submissionEmailRecipients,
+        to: 'srjkmr1024@gmail.com',
         subject: `New Business Plan Generation Request - ${latestRecord?.origin}`,
         html: htmlBody,
         from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,

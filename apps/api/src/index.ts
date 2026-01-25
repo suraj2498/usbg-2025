@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
 import businessPlanRouter from './routes/businessPlan';
 import webHooksRouters from './routes/webhooks';
+import paymentRouter from './routes/payment';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.get('/health', (_req, res) => {
 });
 
 // Routes
+app.use('/api/payment', paymentRouter);
 app.use('/api/business-plans', businessPlanRouter);
 
 // 404 handler
