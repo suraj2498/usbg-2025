@@ -57,8 +57,7 @@ export const stripePaymentCompleted = async (req: Request, res: Response) => {
       const submissionEmailRecipients = process.env.DEFAULT_SUBMISSION_EMAIL_RECIPIENTS!.split(',');
       console.log('Sending email to: ', domainConfig?.toEmail ?? submissionEmailRecipients)
       await emailService.sendEmail({
-        // to: domainConfig?.toEmail ?? submissionEmailRecipients,
-        to: 'srjkmr1024@gmail.com',
+        to: domainConfig?.toEmail ?? submissionEmailRecipients,
         subject: `New Business Plan Generation Request - ${latestRecord?.origin}`,
         html: htmlBody,
         from: domainConfig?.fromEmail ?? process.env.AWS_SES_DEFAULT_FROM_EMAIL,
