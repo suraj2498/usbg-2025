@@ -6,7 +6,7 @@ export const page1Schema = z.object({
   middleName: z.string().optional(),
   email: z.string().email('Please enter a valid email address'),
   businessName: z.string().min(2, 'Business name is required'),
-  website: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  website: z.string().optional(),
   businessAddress: z.string().min(10, 'Please provide a complete address'),
   businessPurpose: z.string().min(20, 'Please provide at least 20 characters'),
   problemSolution: z.string().min(20, 'Please describe the problem and solution'),
